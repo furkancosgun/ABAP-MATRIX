@@ -47,44 +47,63 @@ The **ABAP Matrix Package** is a comprehensive library designed to handle matrix
 
 ### Creating a Matrix
 ```abap
-DATA:matrix TYPE REF TO zcl_matrix.
+DATA lo_matrix TYPE REF TO zcl_matrix.
 
 " Create a 3x3 matrix filled with zeros
-matrix = zcl_matrix=>zeros( iv_rows = 3 iv_cols = 3 ).
+lo_matrix = zcl_matrix=>zeros( iv_rows = 3
+                               iv_cols = 3 ).
 
 " Create a 2x2 diagonal matrix
-matrix = zcl_matrix=>diagonal( iv_rows = 2 iv_cols = 2 ).
+lo_matrix = zcl_matrix=>diagonal( iv_rows = 2
+                                  iv_cols = 2 ).
 ```
 
 ### Basic Arithmetic
 ```abap
+DATA lo_matrix       TYPE REF TO zcl_matrix.
+DATA lo_other_matrix TYPE REF TO zcl_matrix.
+
+lo_matrix = zcl_matrix=>zeros( iv_rows = 3
+                               iv_cols = 3 ).
+
 " Add a scalar to all elements
-DATA:new_matrix TYPE REF TO zcl_matrix.
-new_matrix = matrix->add_by_scalar( iv_val = 5 ).
+lo_matrix = lo_matrix->add_by_scalar( iv_val = 5 ).
+
+lo_other_matrix = zcl_matrix=>ones( iv_rows = 3
+                                    iv_cols = 3 ).
 
 " Add two matrices
-DATA:matrix2: TYPE REF TO zcl_matrix.
-matrix2 = zcl_matrix=>ones( iv_rows = 3 iv_cols = 3 ).
-new_matrix = matrix->add_matrix( io_matrix = matrix2 ).
+lo_matrix = lo_matrix->add_matrix( io_matrix = lo_other_matrix ).
 ```
 
 ### Structural Manipulation
 ```abap
+DATA lo_matrix TYPE REF TO zcl_matrix.
+
+lo_matrix = zcl_matrix=>ones( iv_rows = 6
+                              iv_cols = 3 ).
+
 " Transpose the matrix
-new_matrix = matrix->transpose_matrix( ).
+lo_matrix = lo_matrix->transpose_matrix( ).
 
 " Reshape the matrix to 1x9
-new_matrix = matrix->reshape( iv_rows = 1 iv_cols = 9 ).
+lo_matrix = lo_matrix->reshape( iv_rows = 1
+                                iv_cols = 9 ).
 ```
 
 ### Property Checks
 ```abap
-IF matrix->is_square( ).
-  WRITE: 'Matrix is square'.
+DATA lo_matrix TYPE REF TO zcl_matrix.
+
+lo_matrix = zcl_matrix=>diagonal( iv_rows = 3
+                                  iv_cols = 3 ).
+
+IF lo_matrix->is_square( ).
+  WRITE 'Matrix is square'.
 ENDIF.
 
-IF matrix->is_diagonal( ).
-  WRITE: 'Matrix is diagonal'.
+IF lo_matrix->is_diagonal( ).
+  WRITE 'Matrix is diagonal'.
 ENDIF.
 ```
 
