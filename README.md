@@ -177,18 +177,6 @@ ENDIF.
 
 ---
 
-## Example Use Cases
-1. **Matrix Multiplication in Financial Calculations:**
-   Use the `dot` method to compute large financial models.
-
-2. **Data Transformation:**
-   Reshape and transpose datasets for machine learning preprocessing.
-
-3. **Dynamic UI Layouts:**
-   Store and manipulate UI grid data dynamically.
-
----
-
 ## Contributing
 Contributions are welcome! Please fork the repository and submit a pull request with a detailed explanation of your changes.
 
