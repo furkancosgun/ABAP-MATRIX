@@ -1,4 +1,4 @@
-# ABAP Matrix Library (`zcl_matrix`)
+# ABAP Matrix Library
 
 The **ABAP Matrix Package** is a comprehensive library designed to handle matrix operations in ABAP. It offers a wide range of functionalities, including basic arithmetic operations (addition, subtraction, multiplication, division), structural manipulations (reshaping, transposing, swapping rows/columns), and property checks (e.g., checking if a matrix is square, diagonal, or empty). This package is particularly useful for applications that involve matrix calculations and manipulations in ABAP, making it a powerful tool for mathematical and data processing tasks.
 
@@ -47,7 +47,7 @@ The **ABAP Matrix Package** is a comprehensive library designed to handle matrix
 
 ### Creating a Matrix
 ```abap
-DATA(matrix) TYPE REF TO zcl_matrix.
+DATA:matrix TYPE REF TO zcl_matrix.
 
 " Create a 3x3 matrix filled with zeros
 matrix = zcl_matrix=>zeros( iv_rows = 3 iv_cols = 3 ).
@@ -59,11 +59,11 @@ matrix = zcl_matrix=>diagonal( iv_rows = 2 iv_cols = 2 ).
 ### Basic Arithmetic
 ```abap
 " Add a scalar to all elements
-DATA(new_matrix) TYPE REF TO zcl_matrix.
+DATA:new_matrix TYPE REF TO zcl_matrix.
 new_matrix = matrix->add_by_scalar( iv_val = 5 ).
 
 " Add two matrices
-DATA(matrix2) TYPE REF TO zcl_matrix.
+DATA:matrix2: TYPE REF TO zcl_matrix.
 matrix2 = zcl_matrix=>ones( iv_rows = 3 iv_cols = 3 ).
 new_matrix = matrix->add_matrix( io_matrix = matrix2 ).
 ```
