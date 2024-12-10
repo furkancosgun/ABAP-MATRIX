@@ -209,33 +209,17 @@ CLASS zcl_matrix DEFINITION
 ENDCLASS.
 
 
-CLASS zcl_matrix IMPLEMENTATION.
-  METHOD from_table.
-    DATA lv_rows TYPE i.
-    DATA lv_cols TYPE i.
-    DATA lt_matx TYPE ty_matrix_tab.
 
-    lt_matx = it_matx.
+CLASS ZCL_MATRIX IMPLEMENTATION.
 
-    SORT lt_matx STABLE BY row DESCENDING
-                           col DESCENDING.
-    " Find max row column size
-    LOOP AT lt_matx ASSIGNING FIELD-SYMBOL(<fs_matx>).
-      lv_rows = <fs_matx>-row.
-      lv_cols = <fs_matx>-col.
-      EXIT.
-    ENDLOOP.
 
-    ro_matrix = zcl_matrix=>zeros( iv_rows = lv_rows
-                                   iv_cols = lv_cols ).
-
-    LOOP AT it_matx ASSIGNING <fs_matx>.
-      ro_matrix->set( iv_row = <fs_matx>-row
-                      iv_col = <fs_matx>-col
-                      iv_val = <fs_matx>-val ).
-    ENDLOOP.
-  ENDMETHOD.
-
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->ADD
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROW                         TYPE        I
+* | [--->] IV_COL                         TYPE        I
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD add.
     set( iv_row = iv_row
          iv_col = iv_col
@@ -243,6 +227,13 @@ CLASS zcl_matrix IMPLEMENTATION.
                        iv_col = iv_col ) + iv_val ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->ADD_BY_SCALAR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD add_by_scalar.
     ro_matrix = copy( ).
 
@@ -251,6 +242,13 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->ADD_MATRIX
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD add_matrix.
     DATA lv_result TYPE ty_matrix_value.
 
@@ -267,13 +265,27 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->CLEAR
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD clear.
     ro_matrix = copy( ).
     LOOP AT ro_matrix->matrix ASSIGNING FIELD-SYMBOL(<fs_matrix>).
       CLEAR <fs_matrix>-val.
-      ENDLOOP.
+    ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_MATRIX->CONSTRUCTOR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROWS                        TYPE        I
+* | [--->] IV_COLS                        TYPE        I
+* | [--->] IT_MATX                        TYPE        TY_MATRIX_TAB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD constructor.
     IF iv_rows <= 0 OR iv_cols <= 0.
       zcx_matrix=>raise( zcx_matrix=>c_err_matrix_size_empty ).
@@ -284,12 +296,26 @@ CLASS zcl_matrix IMPLEMENTATION.
     matrix = it_matx.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->COPY
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD copy.
     ro_matrix = NEW zcl_matrix( iv_rows = rows
                                 iv_cols = cols
                                 it_matx = matrix ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Static Public Method ZCL_MATRIX=>DIAGONAL
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROWS                        TYPE        I
+* | [--->] IV_COLS                        TYPE        I
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD diagonal.
     ro_matrix = zeros( iv_rows = iv_rows
                        iv_cols = iv_cols ).
@@ -300,6 +326,14 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->DIV
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROW                         TYPE        I
+* | [--->] IV_COL                         TYPE        I
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD div.
     IF iv_val = 0.
       zcx_matrix=>raise( iv_message = zcx_matrix=>c_err_division_by_zero ).
@@ -311,6 +345,13 @@ CLASS zcl_matrix IMPLEMENTATION.
                        iv_col = iv_col ) / iv_val ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->DIV_BY_SCALAR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD div_by_scalar.
     IF iv_val = 0.
       zcx_matrix=>raise( iv_message = zcx_matrix=>c_err_division_by_zero ).
@@ -322,6 +363,13 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->DIV_MATRIX
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD div_matrix.
     DATA lv_value TYPE ty_matrix_value.
 
@@ -341,6 +389,13 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->DOT
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD dot.
     DATA lv_value TYPE ty_matrix_value.
 
@@ -370,6 +425,14 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDDO.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->DOT_COL
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [--->] IV_COL                         TYPE        I
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD dot_col.
     DATA lv_value TYPE ty_matrix_value.
 
@@ -399,6 +462,14 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDDO.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->DOT_ROW
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [--->] IV_ROW                         TYPE        I
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD dot_row.
     DATA lv_value TYPE ty_matrix_value.
 
@@ -428,6 +499,48 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDDO.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Static Public Method ZCL_MATRIX=>FROM_TABLE
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IT_MATX                        TYPE        TY_MATRIX_TAB
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD from_table.
+    DATA lv_rows TYPE i.
+    DATA lv_cols TYPE i.
+    DATA lt_matx TYPE ty_matrix_tab.
+
+    lt_matx = it_matx.
+
+    SORT lt_matx STABLE BY row DESCENDING
+                           col DESCENDING.
+    " Find max row column size
+    LOOP AT lt_matx ASSIGNING FIELD-SYMBOL(<fs_matx>).
+      lv_rows = <fs_matx>-row.
+      lv_cols = <fs_matx>-col.
+      EXIT.
+    ENDLOOP.
+
+    ro_matrix = zcl_matrix=>zeros( iv_rows = lv_rows
+                                   iv_cols = lv_cols ).
+
+    LOOP AT it_matx ASSIGNING <fs_matx>.
+      ro_matrix->set( iv_row = <fs_matx>-row
+                      iv_col = <fs_matx>-col
+                      iv_val = <fs_matx>-val ).
+    ENDLOOP.
+  ENDMETHOD.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Static Public Method ZCL_MATRIX=>FULL
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROWS                        TYPE        I
+* | [--->] IV_COLS                        TYPE        I
+* | [--->] IV_VALS                        TYPE        TY_MATRIX_VALUE
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD full.
     DATA lt_matrix TYPE ty_matrix_tab.
 
@@ -440,6 +553,14 @@ CLASS zcl_matrix IMPLEMENTATION.
                                 it_matx = lt_matrix ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->GET
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROW                         TYPE        I
+* | [--->] IV_COL                         TYPE        I
+* | [<-()] RV_VAL                         TYPE        TY_MATRIX_VALUE
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD get.
     ASSIGN matrix[ row = iv_row
                    col = iv_col ] TO FIELD-SYMBOL(<fs_matrix>).
@@ -451,30 +572,68 @@ CLASS zcl_matrix IMPLEMENTATION.
     rv_val = <fs_matrix>-val.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->GET_COL
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_COL                         TYPE        I
+* | [<-()] RT_VALS                        TYPE        TY_MATRIX_VALUES
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD get_col.
     LOOP AT matrix ASSIGNING FIELD-SYMBOL(<fs_matrix>) WHERE col = iv_col.
       APPEND <fs_matrix>-val TO rt_vals.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->GET_COLS
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_COLS                        TYPE        I
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD get_cols.
     rv_cols = cols.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->GET_ROW
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROW                         TYPE        I
+* | [<-()] RT_VALS                        TYPE        TY_MATRIX_VALUES
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD get_row.
     LOOP AT matrix ASSIGNING FIELD-SYMBOL(<fs_matrix>) WHERE row = iv_row.
       APPEND <fs_matrix>-val TO rt_vals.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->GET_ROWS
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_ROWS                        TYPE        I
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD get_rows.
     rv_rows = rows.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_COL_VECTOR
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_VECTOR                      TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_col_vector.
     rv_vector = boolc( rows > 1 AND cols = 1 ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_DIAGONAL
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_DIAGONAL                    TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_diagonal.
     rv_diagonal = abap_false.
 
@@ -497,6 +656,12 @@ CLASS zcl_matrix IMPLEMENTATION.
     rv_diagonal = abap_true.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_EMPTY
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_EMPTY                       TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_empty.
     LOOP AT matrix TRANSPORTING NO FIELDS WHERE val IS NOT INITIAL.
       EXIT.
@@ -504,6 +669,13 @@ CLASS zcl_matrix IMPLEMENTATION.
     rv_empty = boolc( sy-subrc <> 0 ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_EQUALS
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [<-()] RV_EQUALS                      TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_equals.
     DATA lv_row_pos TYPE i.
     DATA lv_col_pos TYPE i.
@@ -530,14 +702,33 @@ CLASS zcl_matrix IMPLEMENTATION.
     rv_equals = abap_true.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_RECTANGLE
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_RECTANGLE                   TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_rectangle.
     rv_rectangle = boolc( ( rows > 1 AND cols > 1 ) AND rows <> cols ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_ROW_VECTOR
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_VECTOR                      TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_row_vector.
     rv_vector = boolc( rows = 1 AND cols > 1 ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_SAME
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [<-()] RV_SAME                        TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_same.
     rv_same = abap_false.
     IF    me->get_rows( ) <> io_matrix->get_rows( )
@@ -547,18 +738,43 @@ CLASS zcl_matrix IMPLEMENTATION.
     rv_same = abap_true.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_SINGLE_ITEM
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_SINGLE                      TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_single_item.
     rv_single = boolc( rows = 1 AND cols = 1 ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_SQUARE
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_SQUARE                      TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_square.
     rv_square = boolc( me->get_rows( ) = get_cols( ) ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->IS_VECTOR
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_VECTOR                      TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD is_vector.
     rv_vector = boolc( me->is_col_vector( ) OR me->is_row_vector( ) ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->MERGE
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD merge.
     DATA lv_row_pos TYPE i.
     DATA lv_col_pos TYPE i.
@@ -578,6 +794,14 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDDO.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->MUL
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROW                         TYPE        I
+* | [--->] IV_COL                         TYPE        I
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD mul.
     set( iv_row = iv_row
          iv_col = iv_col
@@ -585,6 +809,13 @@ CLASS zcl_matrix IMPLEMENTATION.
                        iv_col = iv_col ) * iv_val ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->MUL_BY_SCALAR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD mul_by_scalar.
     ro_matrix = copy( ).
 
@@ -593,6 +824,13 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->MUL_MATRIX
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD mul_matrix.
     DATA lv_result TYPE ty_matrix_value.
 
@@ -609,12 +847,28 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Static Public Method ZCL_MATRIX=>ONES
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROWS                        TYPE        I
+* | [--->] IV_COLS                        TYPE        I
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD ones.
     ro_matrix = full( iv_rows = iv_rows
                       iv_cols = iv_cols
                       iv_vals = 1 ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->RESHAPE
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROWS                        TYPE        I
+* | [--->] IV_COLS                        TYPE        I
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD reshape.
     DATA lv_row_pos TYPE i.
     DATA lv_col_pos TYPE i.
@@ -665,6 +919,14 @@ CLASS zcl_matrix IMPLEMENTATION.
                                      col.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->SET
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROW                         TYPE        I
+* | [--->] IV_COL                         TYPE        I
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD set.
     ASSIGN matrix[ row = iv_row
                    col = iv_col ] TO FIELD-SYMBOL(<fs_matrix>).
@@ -676,10 +938,24 @@ CLASS zcl_matrix IMPLEMENTATION.
     <fs_matrix>-val = iv_val.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->SIZE
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RV_SIZE                        TYPE        I
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD size.
     rv_size = rows * cols.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->SUB
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROW                         TYPE        I
+* | [--->] IV_COL                         TYPE        I
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD sub.
     set( iv_row = iv_row
          iv_col = iv_col
@@ -687,6 +963,13 @@ CLASS zcl_matrix IMPLEMENTATION.
                        iv_col = iv_col ) - iv_val ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->SUB_BY_SCALAR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_VAL                         TYPE        TY_MATRIX_VALUE
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD sub_by_scalar.
     ro_matrix = copy( ).
     LOOP AT ro_matrix->matrix ASSIGNING FIELD-SYMBOL(<fs_matrix>).
@@ -694,6 +977,13 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->SUB_MATRIX
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD sub_matrix.
     DATA lv_result TYPE ty_matrix_value.
 
@@ -710,6 +1000,14 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->SWAP_COL
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_COL1                        TYPE        I
+* | [--->] IV_COL2                        TYPE        I
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD swap_col.
     DATA lv_value TYPE ty_matrix_value.
 
@@ -724,6 +1022,14 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->SWAP_ROW
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROW1                        TYPE        I
+* | [--->] IV_ROW2                        TYPE        I
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD swap_row.
     DATA lv_value TYPE ty_matrix_value.
 
@@ -738,6 +1044,12 @@ CLASS zcl_matrix IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_MATRIX->TRANSPOSE_MATRIX
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD transpose_matrix.
     DATA lt_transposed TYPE ty_matrix_tab.
 
@@ -753,6 +1065,14 @@ CLASS zcl_matrix IMPLEMENTATION.
                        it_matx = lt_transposed ).
   ENDMETHOD.
 
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Static Public Method ZCL_MATRIX=>ZEROS
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ROWS                        TYPE        I
+* | [--->] IV_COLS                        TYPE        I
+* | [<-()] RO_MATRIX                      TYPE REF TO ZCL_MATRIX
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD zeros.
     ro_matrix = full( iv_rows = iv_rows
                       iv_cols = iv_cols

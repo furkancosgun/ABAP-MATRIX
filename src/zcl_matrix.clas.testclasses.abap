@@ -1,5 +1,3 @@
-*"* use this source file for your ABAP unit test classes
-
 CLASS ltcl_matrix_math DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
   PUBLIC SECTION.
     METHODS test_add        FOR TESTING.
